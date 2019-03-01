@@ -1,0 +1,4 @@
+kafka:
+  bootstrap_server: localhost:9092
+  topic: d4n-ids-incidents
+  offset: latest #latest for tailing and earliest for backlog
