@@ -3,7 +3,6 @@ import logging
 import socket
 from json import JSONDecodeError
 
-import tornado
 from kafka import KafkaConsumer
 from kafka.errors import NoBrokersAvailable
 from tornado.httpserver import HTTPServer
@@ -57,7 +56,8 @@ class WSHandler(WebSocketHandler):
 
 
 application = Application([
-    (r'/ws', WSHandler),
+
+    (get_value_from_configuration('socket.name'), WSHandler),
 ])
 
 if __name__ == "__main__":
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     read_data_from_kafka()
     http_server = HTTPServer(application)
-    http_server.listen(8888)
+    http_server.listen(get_value_from_configuration('socket.port'))
     myIP = socket.gethostbyname(socket.gethostname())
     print('*** Websocket Server Started at %s***' % myIP)
     IOLoop.instance().start()
