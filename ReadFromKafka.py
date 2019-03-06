@@ -13,6 +13,7 @@ from tornado.websocket import WebSocketHandler
 from ReadConfiguration import get_value_from_configuration
 
 consumer = None
+ws_clients = []
 
 
 def read_data_from_kafka():
@@ -38,18 +39,24 @@ def read_data_from_kafka():
 
 class WSHandler(WebSocketHandler):
     def open(self):
-        print('new connection')
-        if consumer is not None:
-            for msg in consumer:
-                print(msg.value)
-                self.write_message(msg.value)
+        if self not in ws_clients:
+            ws_clients.append(self)
+            print('new connection')
+
+            if consumer is not None:
+                for msg in consumer:
+                    print(msg.value)
+                    for client in ws_clients:
+                        client.write_message(msg.value)
 
     def on_message(self, message):
         print('message received:  %s' % message)
         # Reverse Message and send it back
 
     def on_close(self):
-        print('connection closed')
+        if self in ws_clients:
+            ws_clients.remove(self)
+            print('connection closed')
 
     def check_origin(self, origin):
         return True
