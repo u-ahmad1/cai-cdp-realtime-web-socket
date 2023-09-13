@@ -1,9 +1,9 @@
 kafka:
-  bootstrap_server: localhost:9092
-  topic: d4n-ids-incidents
+  bootstrap_server: 127.0.0.1:9092
+  topic: enrichment
   offset: latest #latest for tailing and earliest for backlog
 
 socket:
   host: 0.0.0.0
-  port: 8888
-  name: /suri
+  port: 8000
+  name: /ws

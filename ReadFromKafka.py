@@ -2,7 +2,7 @@ import json
 import logging
 import socket
 import threading
-from json import JSONDecodeError
+from json import JSONDecodeError, dumps
 
 from kafka import KafkaConsumer
 from kafka.errors import NoBrokersAvailable
@@ -31,7 +31,7 @@ class Consumer(threading.Thread):
                 kafka_topic,
                 bootstrap_servers=[kafka_server],
                 auto_offset_reset=offset,
-                value_deserializer=lambda m: json.loads(m.decode('ascii')),
+                value_deserializer=lambda m: json.loads(m.decode('utf-8')),
                 enable_auto_commit=True)
         except NoBrokersAvailable:
             logging.error('None of the specified broker is available! please check the bootstrap server in config.')
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
     if not os.path.exists('logs'):
         os.makedirs('logs')
-    logging.basicConfig(filename='logs/suricata.log', level=logging.DEBUG,
+    logging.basicConfig(filename='logs/websocket.log', level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s:%(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p')
 
